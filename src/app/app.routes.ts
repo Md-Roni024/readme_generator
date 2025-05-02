@@ -15,6 +15,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/readmes/readmes.component').then(m => m.ReadmesComponent)
   },
   {
+    path: 'edit-readme/:id',
+    loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }
