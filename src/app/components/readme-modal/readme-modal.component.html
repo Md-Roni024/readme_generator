@@ -1,0 +1,45 @@
+<ion-header class="border-b border-gray-200">
+  <ion-toolbar class="bg-white">
+    <ion-title class="text-lg font-medium">Generated README</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" class="text-gray-500 hover:text-gray-700">
+        <ion-icon slot="icon-only" name="close-outline" class="w-5 h-5"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding bg-gray-50">
+  <div class="flex flex-col h-full max-w-3xl mx-auto">
+    <div class="bg-white p-4 rounded-lg mb-4 flex-grow overflow-auto border border-gray-200 shadow-sm">
+      <pre class="whitespace-pre-wrap text-gray-800 font-mono text-sm">{{ generatedReadme }}</pre>
+    </div>
+    
+    <div class="flex justify-between mt-4">
+      <ion-button color="medium" (click)="dismiss()" class="capitalize font-normal">
+        Cancel
+      </ion-button>
+      
+      <div class="flex space-x-2">
+        <ion-button color="primary" (click)="copyToClipboard()" class="capitalize font-normal">
+          <ion-icon slot="start" name="copy-outline" class="mr-1"></ion-icon>
+          Copy README
+        </ion-button>
+        
+        <ion-button color="secondary" (click)="downloadReadme()" class="capitalize font-normal">
+          <ion-icon slot="start" name="download-outline" class="mr-1"></ion-icon>
+          Download README
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-toast
+  [isOpen]="showToast"
+  [message]="toastMessage"
+  [duration]="2000"
+  [position]="'bottom'"
+  [cssClass]="'text-center py-2 rounded-lg max-w-xs mx-auto'"
+  (didDismiss)="showToast = false">
+</ion-toast>

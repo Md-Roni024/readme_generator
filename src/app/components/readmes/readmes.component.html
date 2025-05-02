@@ -64,13 +64,12 @@
                   </ul>
                 </div>
               }
-
-              <ion-button expand="block" color="secondary" class="mt-4" (click)="viewReadme(readme)">
-                View Full Readme
-              </ion-button>
             </ion-card-content>
+          
+            <p><strong>Description:</strong> {{ readme.about }}</p>
           </ion-card>
         }
+      
       </ion-list>
     }
   </div>

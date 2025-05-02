@@ -6,12 +6,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, 
          IonInput, IonButton, IonIcon, IonCheckbox, IonTextarea, 
          IonList, IonItemGroup, IonItemDivider, IonFooter, IonBackButton, IonButtons, 
-         IonLoading, IonToast } from '@ionic/angular/standalone';
+         IonLoading, IonToast, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, trashOutline, saveOutline, arrowBackOutline } from 'ionicons/icons';
+import { add, trashOutline, saveOutline, arrowBackOutline, documentTextOutline } from 'ionicons/icons';
 import { Readme, Skill } from '../../models/readme.model';
 import { ReadmeService } from '../../services/readme.service';
-
+import { ReadmeModalComponent } from '../readme-modal/readme-modal.component';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -41,6 +41,8 @@ import { ReadmeService } from '../../services/readme.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
+
+
 export class HomeComponent implements OnInit {
   isEditMode: boolean = false;
   readmeId: string = '';
@@ -76,9 +78,10 @@ export class HomeComponent implements OnInit {
   constructor(
     private readmeService: ReadmeService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modalCtrl: ModalController
   ) {
-    addIcons({ add, trashOutline, saveOutline, arrowBackOutline });
+    addIcons({ add, trashOutline, saveOutline, arrowBackOutline, documentTextOutline });
   }
 
   ngOnInit() {
@@ -191,5 +194,25 @@ export class HomeComponent implements OnInit {
       this.toastMessage = 'Name, email, and phone are required.';
       this.showToast = true;
     }
+  }
+
+  async openReadmeModal() {
+    // Check if required fields are filled
+    if (!this.readme.name || !this.readme.email || !this.readme.phone) {
+      this.toastMessage = 'Name, email, and phone are required.';
+      this.showToast = true;
+      return;
+    }
+
+    // Open modal with the current readme data
+    const modal = await this.modalCtrl.create({
+      component: ReadmeModalComponent,
+      componentProps: {
+        readme: this.readme
+      },
+      cssClass: 'readme-modal'
+    });
+
+    await modal.present();
   }
 }
