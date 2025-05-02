@@ -1,0 +1,95 @@
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Readme Generator</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-2xl font-bold mb-4">Create Your Readme</h1>
+
+      <form>
+        <!-- Basic Info -->
+        <div class="mb-6">
+          <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-input [(ngModel)]="readme.name" name="name" required></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input type="email" [(ngModel)]="readme.email" name="email" required></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Phone</ion-label>
+            <ion-input type="tel" [(ngModel)]="readme.phone" name="phone" required></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Optional Phone</ion-label>
+            <ion-input type="tel" [(ngModel)]="readme.optionalPhone" name="optionalPhone"></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Social Links -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-xl font-semibold">Social Links</h2>
+            <ion-button size="small" fill="clear" (click)="addSocialLink()">
+              <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+          </div>
+
+          @for (link of readme.socialLinks; track $index) {
+            <div class="flex items-start gap-2 mb-2">
+              <ion-item class="flex-1">
+                <ion-label position="floating">Platform</ion-label>
+                <ion-input [(ngModel)]="link.username" [name]="'socialLinkName' + $index"></ion-input>
+              </ion-item>
+
+              <ion-item class="flex-1">
+                <ion-label position="floating">URL</ion-label>
+                <ion-input [(ngModel)]="link.url" [name]="'socialLinkUrl' + $index"></ion-input>
+              </ion-item>
+
+              <ion-button size="small" fill="clear" color="danger" (click)="removeSocialLink($index)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          }
+        </div>
+
+        <!-- Skills -->
+        <div class="mb-6">
+          <h2 class="text-xl font-semibold mb-2">Skills</h2>
+          <div class="grid grid-cols-3 gap-2">
+            @for (skill of availableSkills; track $index) {
+              <ion-item lines="none">
+                <ion-checkbox [(ngModel)]="skill.checked" [name]="'skill' + $index" (ionChange)="onSkillChange()">
+                  {{ skill.name }}
+                </ion-checkbox>
+              </ion-item>
+            }
+          </div>
+        </div>
+
+        <!-- About Me -->
+        <div class="mb-6">
+          <ion-item>
+            <ion-label position="floating">Tell Me About Yourself</ion-label>
+            <ion-textarea [(ngModel)]="readme.about" name="about" rows="6"></ion-textarea>
+          </ion-item>
+        </div>
+      </form>
+    </div>
+  </ion-content>
+
+  <ion-footer>
+    <ion-toolbar>
+      <div class="flex justify-end gap-2 p-2">
+        <ion-button color="primary" (click)="saveReadme()">Save</ion-button>
+        <ion-button color="secondary">Generate Readme</ion-button>
+      </div>
+    </ion-toolbar>
+  </ion-footer>

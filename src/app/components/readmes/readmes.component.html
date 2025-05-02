@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>My Readmes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="navigateToHome()">
+        <ion-icon slot="icon-only" name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Generated Readmes</h1>
+
+    @if (isLoading) {
+      <ion-loading isOpen="true" message="Loading readmes..."></ion-loading>
+    } @else if (readmes.length === 0) {
+      <div class="text-center my-8 p-6 bg-gray-100 rounded-lg">
+        <p class="text-lg text-gray-600">No readmes found. Create your first one!</p>
+        <ion-button class="mt-4" (click)="navigateToHome()">Create Readme</ion-button>
+      </div>
+    } @else {
+      <ion-list>
+        @for (readme of readmes; track readme.id; let i = $index) {
+          <ion-card class="mb-4">
+            <ion-card-header>
+              <div class="flex justify-between items-center">
+                <ion-card-title class="text-xl">
+                  {{ i + 1 }}. {{ readme.name }}
+                </ion-card-title>
+                <ion-button fill="clear" color="primary" (click)="editReadme(readme.id!)">
+                  <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p><strong>Email:</strong> {{ readme.email }}</p>
+              <p><strong>Phone:</strong> {{ readme.phone }}</p>
+              @if (readme.skills?.length) {
+                <p><strong>Skills:</strong> {{ readme.skills.join(', ') }}</p>
+              }
+              @if (readme.socialLinks?.length) {
+                <p><strong>Social:</strong> {{ readme.socialLinks.join(', ') }}</p>
+              }
+              <ion-button expand="block" class="mt-3" (click)="viewReadme(readme)">
+                View Readme
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        }
+      </ion-list>
+    }
+  </div>
+</ion-content>
+
+<!-- <ion-toast
+  [isOpen]="showToast"
+  [message]="toastMessage"
+  [duration]="3000"
+  (didDismiss)="showToast = false">
+</ion-toast> -->
