@@ -1,17 +1,3 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>My Readmes</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="navigateToHome()">
-        <ion-icon slot="icon-only" name="home-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding">
   <div class="max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">Generated Readmes</h1>
@@ -33,7 +19,7 @@
                   {{ i + 1 }}. {{ readme.name }}
                 </ion-card-title>
                 <ion-button fill="clear" color="primary" (click)="editReadme(readme.id!)">
-                  <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+                  Edit
                 </ion-button>
               </div>
             </ion-card-header>
@@ -63,10 +49,9 @@
                     }
                   </ul>
                 </div>
+                <p><strong>Description:</strong> {{ readme.about }}</p>
               }
             </ion-card-content>
-          
-            <p><strong>Description:</strong> {{ readme.about }}</p>
           </ion-card>
         }
       

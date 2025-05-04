@@ -20,7 +20,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { pencilOutline, homeOutline } from 'ionicons/icons';
-import { ReadmeService } from '../../services/readme.service';
+import { ReadmeService } from '../../services/readme/readme.service';
 import { Readme } from '../../models/readme.model';
 
 @Component({
@@ -29,20 +29,13 @@ import { Readme } from '../../models/readme.model';
   imports: [
     CommonModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonButton,
     IonList,
-    IonBackButton,
-    IonButtons,
     IonCard,
     IonCardContent,
     IonCardHeader,
     IonCardTitle,
-    IonIcon,
-    IonLoading,
-    IonToast
+    IonLoading
   ],
   templateUrl: './readmes.component.html',
   styleUrls: ['./readmes.component.scss'],
@@ -87,7 +80,6 @@ export class ReadmesComponent implements OnInit {
   }
 
   editReadme(id: string) {
-    console.log("ID:"+id);
     this.router.navigate(['/edit-readme', id]);
   }
 }

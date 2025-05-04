@@ -1,25 +1,23 @@
 import { Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
+import { ReadmesComponent } from './components/readmes/readmes.component';
+
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
+    component: HomeComponent,
   },
   {
     path: 'home',
-    loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)
+    component: HomeComponent,
   },
   {
     path: 'readmes',
-    loadComponent: () => import('./components/readmes/readmes.component').then(m => m.ReadmesComponent)
+    component: ReadmesComponent,
   },
   {
     path: 'edit-readme/:id',
-    loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)
-  },
-  {
-    path: '**',
-    redirectTo: 'home'
+    component: HomeComponent,
   }
 ];

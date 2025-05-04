@@ -1,65 +1,58 @@
-// components/readme-modal/readme-modal.component.ts
-import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ModalController } from '@ionic/angular/standalone';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, 
-         IonIcon, IonButtons, IonTextarea, IonToast } from '@ionic/angular/standalone';
+import { Component, Input, OnInit,inject } from '@angular/core';
+import { IonContent, IonButton, 
+         IonIcon, ModalController,IonToast } from '@ionic/angular/standalone';
 import { Readme } from '../../models/readme.model';
 import { addIcons } from 'ionicons';
 import { copyOutline, downloadOutline, closeOutline } from 'ionicons/icons';
 
+addIcons({ copyOutline, downloadOutline, closeOutline });
+
 @Component({
-  selector: 'app-home',
+  selector: 'app-readme-modal',
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonButton,
     IonIcon,
-    IonButtons,
-    IonTextarea,
     IonToast
   ],
   templateUrl: './readme-modal.component.html',
-  styleUrls: ['./readme-modal.component.scss'],
+  styleUrls: [],
 })
 
 
 export class ReadmeModalComponent implements OnInit {
+  private modalCtrl = inject(ModalController);
   @Input() readme!: Readme;
   generatedReadme: string = '';
   showToast: boolean = false;
   toastMessage: string = '';
-
-  constructor(private modalCtrl: ModalController) {
-    addIcons({ copyOutline, downloadOutline, closeOutline });
-  }
 
   ngOnInit() {
     this.generateReadmeContent();
   }
 
   generateReadmeContent() {
-    // Generate README markdown based on the provided readme object
-    this.generatedReadme = `# ${this.readme.name}'s Profile
-
-## Contact Information
-- Email: ${this.readme.email}
-- Phone: ${this.readme.phone}
-${this.readme.optionalPhone ? `- Alternative Phone: ${this.readme.optionalPhone}` : ''}
-
-## Social Links
-${this.generateSocialLinksSection()}
-
-## Skills
-${this.generateSkillsSection()}
-
-## About Me
-${this.readme.about || 'No information provided.'}
-`;
+    this.generatedReadme = [
+      `# ${this.readme.name}'s Profile`,
+  
+      `## 📞 Contact Information`,
+      `- **Email:** ${this.readme.email}`,
+      `- **Phone:** ${this.readme.phone}`,
+      this.readme.optionalPhone ? `- **Alternative Phone:** ${this.readme.optionalPhone}` : '',
+  
+      `## 🔗 Social Links`,
+      this.generateSocialLinksSection(),
+  
+      `## 🛠️ Skills`,
+      this.generateSkillsSection(),
+  
+      `## 👤 About Me`,
+      this.readme.about || 'No information provided.'
+    ].filter(Boolean).join('\n\n');
   }
+  
+  
 
   generateSocialLinksSection(): string {
     if (!this.readme.socialLinks || this.readme.socialLinks.length === 0) {
@@ -93,16 +86,21 @@ ${this.readme.about || 'No information provided.'}
   }
 
   downloadReadme() {
-    const element = document.createElement('a');
-    const file = new Blob([this.generatedReadme], { type: 'text/markdown' });
-    element.href = URL.createObjectURL(file);
-    element.download = `${this.readme.name.replace(/\s+/g, '_')}_README.md`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    
-    this.toastMessage = 'README downloaded successfully!';
-    this.showToast = true;
+    try{
+      const element = document.createElement('a');
+      const file = new Blob([this.generatedReadme], { type: 'text/markdown' });
+      element.href = URL.createObjectURL(file);
+      element.download = `${this.readme.name.replace(/\s+/g, '_')}_README.md`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      this.toastMessage = 'README FILE DOWNLOADED!';
+      this.showToast = true;
+
+    }catch(err){
+      this.toastMessage = 'FAILLED TO DOWNLOADED!';
+      this.showToast = true;
+    }
   }
 
   dismiss() {

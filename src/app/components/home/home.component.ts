@@ -1,27 +1,23 @@
-// components/home/home.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, 
+import { IonContent, IonItem, IonLabel, 
          IonInput, IonButton, IonIcon, IonCheckbox, IonTextarea, 
-         IonList, IonItemGroup, IonItemDivider, IonFooter, IonBackButton, IonButtons, 
          IonLoading, IonToast, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, trashOutline, saveOutline, arrowBackOutline, documentTextOutline } from 'ionicons/icons';
+import {add} from 'ionicons/icons';
 import { Readme, Skill } from '../../models/readme.model';
-import { ReadmeService } from '../../services/readme.service';
+import { ReadmeService } from '../../services/readme/readme.service';
 import { ReadmeModalComponent } from '../readme-modal/readme-modal.component';
+
+addIcons({add})
+
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonItem,
     IonLabel,
     IonInput,
@@ -29,21 +25,20 @@ import { ReadmeModalComponent } from '../readme-modal/readme-modal.component';
     IonIcon,
     IonCheckbox,
     IonTextarea,
-    IonList,
-    IonItemGroup,
-    IonItemDivider,
-    IonFooter,
-    IonBackButton,
-    IonButtons,
     IonLoading,
     IonToast
   ],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrls: [],
 })
 
 
 export class HomeComponent implements OnInit {
+  private readmeService = inject(ReadmeService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private modalCtrl = inject(ModalController);
+
   isEditMode: boolean = false;
   readmeId: string = '';
   isLoading: boolean = false;
@@ -75,17 +70,7 @@ export class HomeComponent implements OnInit {
     { name: 'Git', checked: false }
   ];
 
-  constructor(
-    private readmeService: ReadmeService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private modalCtrl: ModalController
-  ) {
-    addIcons({ add, trashOutline, saveOutline, arrowBackOutline, documentTextOutline });
-  }
-
   ngOnInit() {
-    // Check if there's an ID in the route
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.readmeId = params['id'];
@@ -101,19 +86,13 @@ export class HomeComponent implements OnInit {
       next: (readme) => {
         if (readme) {
           this.readme = readme;
-          // Update the available skills based on the loaded readme
           this.updateAvailableSkills();
-          console.log('Loaded readme:', this.readme);
         } else {
-          this.toastMessage = 'Readme not found.';
-          this.showToast = true;
           this.router.navigate(['/readmes']);
         }
       },
       error: (err) => {
         console.error('Error loading readme:', err);
-        this.toastMessage = 'Failed to load readme.';
-        this.showToast = true;
       },
       complete: () => {
         this.isLoading = false;
@@ -122,7 +101,6 @@ export class HomeComponent implements OnInit {
   }
 
   updateAvailableSkills() {
-    // Mark skills as checked if they exist in the readme
     this.availableSkills.forEach(skill => {
       skill.checked = this.readme.skills?.includes(skill.name) || false;
     });
@@ -150,69 +128,69 @@ export class HomeComponent implements OnInit {
   saveReadme() {
     if (this.readme.name && this.readme.email && this.readme.phone) {
       this.isLoading = true;
-      
+  
       if (this.isEditMode) {
-        // Update existing readme
         const readmeToUpdate = { ...this.readme };
-        delete readmeToUpdate.id; // Remove ID from the object to update
-        
-        this.readmeService.updateReadme(this.readmeId, readmeToUpdate)
-          .then(() => {
-            this.toastMessage = 'Readme updated successfully!';
+        delete readmeToUpdate.id; 
+  
+        this.readmeService.updateReadme(this.readmeId, readmeToUpdate).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.toastMessage = 'README SUCCESSFULLY UPDATED!';
             this.showToast = true;
-            this.isLoading = false; // Stop loading before navigation
             setTimeout(() => {
               this.router.navigate(['/readmes']);
-            }, 500); // Small delay to ensure loading is stopped
-          })
-          .catch(err => {
+            }, 1000);
+          },
+          error: (err) => {
             console.error('Error updating readme:', err);
-            this.toastMessage = 'Failed to update readme.';
-            this.showToast = true;
             this.isLoading = false;
-          });
+            this.toastMessage = 'README FAILED TO UPDATE!';
+            this.showToast = true;
+          }
+        });
       } else {
         // Create new readme
         this.readmeService.saveReadme(this.readme).subscribe({
           next: (id) => {
-            this.toastMessage = 'Readme created successfully!';
+            this.isLoading = false;
+            this.toastMessage = 'README SAVED SUCCESSFULLY!';
             this.showToast = true;
-            this.isLoading = false; // Stop loading before navigation
             setTimeout(() => {
               this.router.navigate(['/readmes']);
-            }, 500); // Small delay to ensure loading is stopped
+            }, 1000);
           },
           error: (err) => {
             console.error('Error saving readme:', err);
-            this.toastMessage = 'Failed to save readme.';
-            this.showToast = true;
             this.isLoading = false;
+            this.toastMessage = 'README FAILED TO SAVE!';
+            this.showToast = true;
           }
         });
       }
     } else {
-      this.toastMessage = 'Name, email, and phone are required.';
+      this.toastMessage = 'PLEASE INPUT ALL REQUIRED FIELDS!';
       this.showToast = true;
     }
   }
+  
 
   async openReadmeModal() {
-    // Check if required fields are filled
     if (!this.readme.name || !this.readme.email || !this.readme.phone) {
       this.toastMessage = 'Name, email, and phone are required.';
       this.showToast = true;
       return;
     }
-
-    // Open modal with the current readme data
     const modal = await this.modalCtrl.create({
       component: ReadmeModalComponent,
       componentProps: {
         readme: this.readme
-      },
-      cssClass: 'readme-modal'
+      }
     });
-
     await modal.present();
+  }
+
+  navigateToReadmes() {
+    this.router.navigate(['/readmes']);
   }
 }
