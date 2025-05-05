@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Readme } from '../../models/readme.model';
-import { FirebaseHttpService } from '../http/http.service';
+import { FirebaseHttpService } from '../firebase/firebase.service';
 import { CollectionReference } from '@angular/fire/firestore';
 
 @Injectable({
