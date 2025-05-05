@@ -58,12 +58,11 @@
         }
       </div>
 
-      <!-- Skills -->
       <div>
         <h2 class="text-lg font-semibold mb-2">Skills</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
           @for (skill of availableSkills; track $index) {
-            <ion-item lines="none">
+            <ion-item lines="none"class="rounded-lg shadow-sm" >
               <ion-checkbox [(ngModel)]="skill.checked" [name]="'skill' + $index" (ionChange)="onSkillChange()">
                 {{ skill.name }}
               </ion-checkbox>
@@ -72,7 +71,6 @@
         </div>
       </div>
 
-      <!-- About Me -->
       <div class="mb-6">
         <div class="border border-gray-300 rounded-lg p-2 bg-white shadow-sm">
           <ion-textarea
